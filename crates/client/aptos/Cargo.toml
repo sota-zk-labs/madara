@@ -1,0 +1,18 @@
+[package]
+name = "aptos"
+authors.workspace = true
+homepage.workspace = true
+edition.workspace = true
+repository.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = { workspace = true }
+aptos-sdk = { workspace = true }
+dc-metrics = { workspace = true }
+url = { workspace = true }
+starknet-types-core = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+dc-db = { workspace = true }
+
