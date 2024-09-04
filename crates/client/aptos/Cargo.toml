@@ -15,4 +15,6 @@ url = { workspace = true }
 starknet-types-core = { workspace = true }
 serde = { workspace = true, features = ["derive"] }
 dc-db = { workspace = true }
+dp-transactions = { workspace = true }
+log = { workspace = true }
 

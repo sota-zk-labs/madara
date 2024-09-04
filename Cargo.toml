@@ -22,6 +22,7 @@ members = [
   "crates/primitives/state_update",
   "crates/primitives/chain_config",
   "crates/primitives/utils",
+  "crates/client/aptos",
   "crates/proc-macros",
   "crates/tests",
   "crates/cairo-test-contracts",
@@ -227,6 +228,13 @@ tracing-subscriber = { version = "0.3.18", features = [
 ] }
 tracing-opentelemetry = "0.26.0"
 
+aptos-sdk = { git = "https://github.com/aptos-labs/aptos-core", rev = "dd781812dee44192c3d9389c584e98945dabff6d" }
+
 [patch.crates-io]
 # wait for PR https://github.com/starknet-io/types-rs/pull/76 to be merged
 starknet-types-core = { git = "https://github.com/kasarlabs/types-rs.git", branch = "feat-deserialize-v0.1.7" }
+
+blockifier = { git = "https://github.com/starkware-libs/blockifier", tag = "v0.8.0-rc.0" }
+
+merlin = { git = "https://github.com/aptos-labs/merlin" }
+x25519-dalek = { git = "https://github.com/Tranduy1dol/x25519-dalek", branch = "zeroize_v1.7" }
