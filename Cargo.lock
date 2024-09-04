@@ -700,6 +700,8 @@ dependencies = [
  "aptos-sdk",
  "dc-db",
  "dc-metrics",
+ "dp-transactions",
+ "log",
  "serde",
  "starknet-types-core",
  "url",

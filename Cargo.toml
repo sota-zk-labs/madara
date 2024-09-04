@@ -21,6 +21,8 @@ members = [
   "crates/primitives/state_update",
   "crates/primitives/chain_config",
   "crates/primitives/utils",
+  "crates/tests",
+  "crates/client/aptos",
   "crates/proc-macros",
   "crates/tests",
 ]
@@ -172,7 +174,7 @@ tokio = { version = "1.34", features = ["signal"] }
 url = "2.4"
 rayon = "1.10"
 bincode = "1.3"
-prometheus = "0.13.4"
+prometheus = { version = "0.13.3", default-features = false }
 fdlimit = "0.3.0"
 proptest = "1.5.0"
 proptest-derive = "0.5.0"
@@ -185,9 +187,16 @@ serial_test = "3.1.1"
 itertools = "0.13.0"
 regex = "1.10.5"
 
+aptos-sdk = { git = "https://github.com/aptos-labs/aptos-core", rev = "dd781812dee44192c3d9389c584e98945dabff6d" }
+
 [patch.crates-io]
 starknet-core = { git = "https://github.com/kasarlabs/starknet-rs.git", branch = "fork" }
 starknet-providers = { git = "https://github.com/kasarlabs/starknet-rs.git", branch = "fork" }
 
 # wait for PR https://github.com/starknet-io/types-rs/pull/76 to be merged
 starknet-types-core = { git = "https://github.com/kasarlabs/types-rs.git", branch = "feat-deserialize-v0.1.5" }
+
+blockifier = { git = "https://github.com/starkware-libs/blockifier", tag = "v0.8.0-rc.0" }
+
+merlin = { git = "https://github.com/aptos-labs/merlin" }
+x25519-dalek = { git = "https://github.com/Tranduy1dol/x25519-dalek", branch = "zeroize_v1.7" }
