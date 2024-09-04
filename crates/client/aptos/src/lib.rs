@@ -4,3 +4,4 @@ pub mod utils;
 pub mod l1_gas_price;
 mod error;
 mod sync;
+mod l1_messaging;
