@@ -41,7 +41,8 @@ starknet_api = { workspace = true }
 
 # Other
 alloy = { workspace = true }
-anyhow.workspace = true
+aptos-sdk = { workspace = true }
+anyhow = { workspace = true }
 async-trait = { workspace = true }
 chrono = "0.4.38"
 clap = { workspace = true, features = ["derive"] }

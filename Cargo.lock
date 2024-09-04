@@ -5473,6 +5473,7 @@ version = "0.1.0"
 dependencies = [
  "alloy",
  "anyhow",
+ "aptos-sdk",
  "async-trait",
  "chrono",
  "clap",
