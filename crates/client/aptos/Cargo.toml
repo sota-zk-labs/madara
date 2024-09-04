@@ -10,11 +10,13 @@ license.workspace = true
 [dependencies]
 anyhow = { workspace = true }
 aptos-sdk = { workspace = true }
-dc-metrics = { workspace = true }
-url = { workspace = true }
-starknet-types-core = { workspace = true }
-serde = { workspace = true, features = ["derive"] }
 dc-db = { workspace = true }
+dc-mempool = { workspace = true }
+dc-metrics = { workspace = true }
 dp-transactions = { workspace = true }
+dp-utils = { workspace = true }
 log = { workspace = true }
-
+serde = { workspace = true, features = ["derive"] }
+starknet-types-core = { workspace = true }
+tokio = { workspace = true }
+url = { workspace = true }

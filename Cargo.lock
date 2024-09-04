@@ -699,11 +699,14 @@ dependencies = [
  "anyhow",
  "aptos-sdk",
  "dc-db",
+ "dc-mempool",
  "dc-metrics",
  "dp-transactions",
+ "dp-utils",
  "log",
  "serde",
  "starknet-types-core",
+ "tokio",
  "url",
 ]
 
