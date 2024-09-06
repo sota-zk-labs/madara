@@ -58,8 +58,8 @@ impl AptosClient {
     }
 
     pub async fn get_latest_block_number(&self) -> anyhow::Result<u64> {
-        let block_number = self.provider.get_block_by_height(0, false).await?;
-        Ok(block_number.into_inner().block_height.0)
+        let block_number = self.provider.get_ledger_information().await?;
+        Ok(block_number.into_inner().block_height)
     }
 
     #[allow(unused)]
