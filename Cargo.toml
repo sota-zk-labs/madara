@@ -228,7 +228,7 @@ tracing-subscriber = { version = "0.3.18", features = [
 ] }
 tracing-opentelemetry = "0.26.0"
 
-aptos-sdk = { git = "https://github.com/aptos-labs/aptos-core", rev = "dd781812dee44192c3d9389c584e98945dabff6d" }
+aptos-sdk = { git = "https://github.com/aptos-labs/aptos-core", rev = "6a130c1cca274a5cfdb4a65b441cd5fe61b6c15b", package = "aptos-sdk"  }
 
 [patch.crates-io]
 # wait for PR https://github.com/starknet-io/types-rs/pull/76 to be merged
