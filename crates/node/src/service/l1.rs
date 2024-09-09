@@ -1,6 +1,7 @@
 use crate::cli::l1::L1SyncParams;
 use alloy::primitives::Address;
 use anyhow::Context;
+use aptos_sdk::types::account_address::AccountAddress;
 use mc_db::{DatabaseService, MadaraBackend};
 use mc_eth::client::{EthereumClient, L1BlockMetrics};
 use mc_mempool::{GasPriceProvider, Mempool};
@@ -10,7 +11,6 @@ use starknet_api::core::ChainId;
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::task::JoinSet;
-use aptos_sdk::types::account_address::AccountAddress;
 
 #[derive(Clone)]
 pub struct L1SyncService {
@@ -56,7 +56,8 @@ impl L1SyncService {
 
         let aptos_client = if config.l1_type == L1Type::Aptos && !config.sync_l1_disabled {
             if let Some(l1_rpc_url) = &config.l1_endpoint {
-                let core_address = AccountAddress::from_hex_literal(config.clone().aptos_core_contract.unwrap().as_str())?;
+                let core_address =
+                    AccountAddress::from_hex_literal(config.clone().aptos_core_contract.unwrap().as_str())?;
                 let l1_block_metrics = dc_aptos::client::L1BlockMetrics::register(&metrics_handle)?;
                 Some(
                     dc_aptos::client::AptosClient::new(l1_rpc_url.clone(), core_address, l1_block_metrics)
@@ -65,7 +66,7 @@ impl L1SyncService {
                 )
             } else {
                 anyhow::bail!(
-                    "No Ethereum endpoint provided. You need to provide one using --l1-endpoint <RPC URL> in order to verify the synced state or disable the l1 watcher using --no-l1-sync."
+                    "No Aptos endpoint provided. You need to provide one using --l1-endpoint <RPC URL> in order to verify the synced state or disable the l1 watcher using --no-l1-sync."
                 );
             }
         } else {
@@ -95,7 +96,8 @@ impl L1SyncService {
                     .clone()
                     .context("AptosClient is required to start the l1 sync service but not provided.")?;
                 // running at-least once before the block production service
-                dc_aptos::l1_gas_price::gas_price_worker(&aptos_client, l1_gas_provider.clone(), gas_price_poll_ms).await?;
+                dc_aptos::l1_gas_price::gas_price_worker(&aptos_client, l1_gas_provider.clone(), gas_price_poll_ms)
+                    .await?;
             }
         }
 
@@ -119,7 +121,8 @@ impl Service for L1SyncService {
             self.clone();
 
         if let Some(eth_client) = self.eth_client.take() {
-            let L1SyncService { l1_gas_provider, chain_id, gas_price_sync_disabled, gas_price_poll_ms, .. } = self.clone();
+            let L1SyncService { l1_gas_provider, chain_id, gas_price_sync_disabled, gas_price_poll_ms, .. } =
+                self.clone();
 
             // enabled
 
@@ -139,21 +142,22 @@ impl Service for L1SyncService {
         }
 
         if let Some(aptos_client) = self.aptos_client.take() {
-            let L1SyncService { l1_gas_provider, chain_id, gas_price_sync_disabled, gas_price_poll_ms, .. } = self.clone();
+            let L1SyncService { l1_gas_provider, chain_id, gas_price_sync_disabled, gas_price_poll_ms, .. } =
+                self.clone();
 
             // enabled
 
             let db_backend = Arc::clone(&self.db_backend);
             join_set.spawn(async move {
                 dc_aptos::sync::l1_sync_worker(
-                    &db_backend,
+                    db_backend,
                     &aptos_client,
                     chain_id.to_felt(),
                     l1_gas_provider,
                     gas_price_sync_disabled,
                     gas_price_poll_ms,
                 )
-                    .await
+                .await
             });
         }
 

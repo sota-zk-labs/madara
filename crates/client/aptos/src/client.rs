@@ -1,13 +1,13 @@
 use std::sync::Arc;
 
+use crate::event_tracker::EventTracker;
+use crate::utils::{new_account, view_request};
 use aptos_sdk::rest_client::Client;
 use aptos_sdk::types::account_address::AccountAddress;
 use aptos_sdk::types::LocalAccount;
 use dc_metrics::{Gauge, MetricsRegistry, PrometheusError, F64};
 use starknet_types_core::felt::Felt;
 use url::Url;
-
-use crate::utils::{new_account, view_request};
 
 #[derive(Clone, Debug)]
 pub struct L1BlockMetrics {
@@ -33,6 +33,7 @@ pub struct AptosClient {
     pub provider: Client,
     pub l1_core_contract: Arc<LocalAccount>,
     pub l1_block_metrics: L1BlockMetrics,
+    pub event_tracker: EventTracker,
 }
 
 impl Clone for AptosClient {
@@ -41,6 +42,7 @@ impl Clone for AptosClient {
             provider: self.provider.clone(),
             l1_core_contract: Arc::clone(&self.l1_core_contract),
             l1_block_metrics: self.l1_block_metrics.clone(),
+            event_tracker: self.event_tracker.clone(),
         }
     }
 }
@@ -53,8 +55,9 @@ impl AptosClient {
     ) -> anyhow::Result<Self> {
         let provider = Client::new(url);
         let account = new_account(l1_core_address);
+        let event_tracker = EventTracker::new(provider.clone(), account.address(), 3);
 
-        Ok(Self { provider, l1_core_contract: Arc::new(account), l1_block_metrics })
+        Ok(Self { provider, l1_core_contract: Arc::new(account), l1_block_metrics, event_tracker })
     }
 
     pub async fn get_latest_block_number(&self) -> anyhow::Result<u64> {
@@ -74,7 +77,7 @@ impl AptosClient {
     }
 
     pub async fn get_last_state_root(&self) -> anyhow::Result<Felt> {
-        let result = view_request(&self.provider, self.l1_core_contract.address(), "state_block_root".parse()?).await?;
+        let result = view_request(&self.provider, self.l1_core_contract.address(), "state_root".parse()?).await?;
         Ok(Felt::from(result.parse::<u64>()?))
     }
 

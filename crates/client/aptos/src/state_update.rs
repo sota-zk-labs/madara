@@ -1,10 +1,15 @@
-use crate::client::{AptosClient, L1BlockMetrics};
-use crate::utils::trim_hash;
+use std::str::FromStr;
+use std::sync::Arc;
+use std::time::Duration;
+
 use anyhow::Context;
 use dc_db::DeoxysBackend;
 use dp_transactions::MAIN_CHAIN_ID;
 use serde::Deserialize;
 use starknet_types_core::felt::Felt;
+use tokio::time::sleep;
+
+use crate::client::{AptosClient, L1BlockMetrics};
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
 pub struct L1StateUpdate {
@@ -23,29 +28,30 @@ pub async fn get_initial_state(aptos_client: &AptosClient) -> anyhow::Result<L1S
 
 pub async fn listen_and_update_state(
     aptos_client: &AptosClient,
-    backend: &DeoxysBackend,
+    backend: Arc<DeoxysBackend>,
     block_metrics: &L1BlockMetrics,
     chain_id: Felt,
 ) -> anyhow::Result<()> {
-    let event_filter = aptos_client
-        .provider
-        .get_account_events(aptos_client.l1_core_contract.address(), "LogStateUpdate", "", None, None)
-        .await?
-        .into_inner();
+    let typ = format!("{}::starknet_validity::LogStateUpdate", aptos_client.clone().l1_core_contract.address());
 
-    for event in event_filter {
-        log::info!("Formatting event into an L1StateUpdate");
+    let mut event_tracker = aptos_client.clone().event_tracker;
 
-        // TODO: Remove unwrap()
-        let data = event.data;
-        let block_number = data.get("block_number").unwrap().as_u64().unwrap();
-        let global_root = Felt::from(data.get("global_root").unwrap().as_u64().unwrap());
-        let block_hash = Felt::from(data.get("block_hash").unwrap().as_u64().unwrap());
+    let block_metrics = block_metrics.clone();
 
-        let format_event = L1StateUpdate { block_number, global_root, block_hash };
+    tokio::spawn(async move {
+        log::info!("⭐ Looking for LogStateUpdate event!");
+        loop {
+            while let Some(event) = event_tracker.latest_event(typ.clone()).await {
+                let block_number = event.data.get("block_number").unwrap().as_str().unwrap().parse::<u64>().unwrap();
+                let global_root = Felt::from_str(event.data.get("global_root").unwrap().as_str().unwrap()).unwrap();
+                let block_hash = Felt::from_str(event.data.get("block_hash").unwrap().as_str().unwrap()).unwrap();
 
-        update_l1(backend, format_event, block_metrics, chain_id)?
-    }
+                let format_event = L1StateUpdate { block_number, global_root, block_hash };
+                update_l1(&backend, format_event, &block_metrics, chain_id).expect("TODO: panic message");
+            }
+            sleep(Duration::from_secs(5)).await;
+        }
+    });
 
     Ok(())
 }
@@ -60,8 +66,8 @@ pub fn update_l1(
         log::info!(
             "🔄 Updated L1 head #{} ({}) with state root ({})",
             state_update.block_number,
-            trim_hash(&state_update.block_hash),
-            trim_hash(&state_update.global_root)
+            state_update.block_hash,
+            state_update.global_root,
         );
 
         block_metrics.l1_block_number.set(state_update.block_number as f64);
@@ -76,7 +82,7 @@ pub fn update_l1(
 }
 
 pub async fn state_update_worker(
-    backend: &DeoxysBackend,
+    backend: Arc<DeoxysBackend>,
     aptos_client: &AptosClient,
     chain_id: Felt,
 ) -> anyhow::Result<()> {
@@ -84,8 +90,8 @@ pub async fn state_update_worker(
     log::debug!("update_l1: cleared confirmed block number");
 
     log::info!("🚀 Subscribed to L1 state verification");
-    let initial_state = get_initial_state(aptos_client).await.context("Getting initial ethereum state")?;
-    update_l1(backend, initial_state, &aptos_client.l1_block_metrics, chain_id)?;
+    let initial_state = get_initial_state(aptos_client).await.context("Getting initial aptos state")?;
+    update_l1(&backend, initial_state, &aptos_client.l1_block_metrics, chain_id)?;
 
     listen_and_update_state(aptos_client, backend, &aptos_client.l1_block_metrics, chain_id)
         .await
