@@ -1,12 +1,14 @@
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
 use dc_mempool::{GasPriceProvider, L1DataProvider};
 use dp_utils::wait_or_graceful_shutdown;
+
 use crate::client::AptosClient;
 
 pub async fn gas_price_worker_once(
     aptos_client: &AptosClient,
     l1_gas_provider: GasPriceProvider,
-    gas_price_poll_ms: Duration
+    gas_price_poll_ms: Duration,
 ) -> anyhow::Result<()> {
     match update_gas_price(aptos_client, l1_gas_provider.clone()).await {
         Ok(_) => log::trace!("Updated gas prices"),
@@ -31,7 +33,7 @@ pub async fn gas_price_worker_once(
 pub async fn gas_price_worker(
     aptos_client: &AptosClient,
     l1_gas_provider: GasPriceProvider,
-    gas_price_poll_ms: Duration
+    gas_price_poll_ms: Duration,
 ) -> anyhow::Result<()> {
     l1_gas_provider.update_last_update_timestamp();
     let mut interval = tokio::time::interval(gas_price_poll_ms);
@@ -43,15 +45,13 @@ pub async fn gas_price_worker(
     Ok(())
 }
 
-async fn update_gas_price(
-    aptos_client: &AptosClient,
-    l1_gas_provider: GasPriceProvider,
-) -> anyhow::Result<()> {
+async fn update_gas_price(aptos_client: &AptosClient, l1_gas_provider: GasPriceProvider) -> anyhow::Result<()> {
     let latest_block = aptos_client.provider.get_block_by_height(0, false).await?.into_inner();
 
     let txs = latest_block.transactions.unwrap();
     let latest_gas_fee = txs.get(txs.len()).unwrap().transaction_info()?.gas_used.0;
-    let avg_gas_fee = txs.clone().into_iter().map(|tx| tx.transaction_info().unwrap().gas_used.0).sum::<u64>() / txs.len() as u64;
+    let avg_gas_fee =
+        txs.clone().into_iter().map(|tx| tx.transaction_info().unwrap().gas_used.0).sum::<u64>() / txs.len() as u64;
 
     l1_gas_provider.update_eth_l1_gas_price(latest_gas_fee as u128);
     l1_gas_provider.update_eth_l1_data_gas_price(avg_gas_fee as u128);
@@ -61,10 +61,7 @@ async fn update_gas_price(
     Ok(())
 }
 
-async fn update_l1_block_metrics(
-    aptos_client: &AptosClient,
-    l1_gas_provider: GasPriceProvider,
-) -> anyhow::Result<()> {
+async fn update_l1_block_metrics(aptos_client: &AptosClient, l1_gas_provider: GasPriceProvider) -> anyhow::Result<()> {
     let latest_block_number = aptos_client.get_latest_block_number().await?;
 
     // Get the current gas price
