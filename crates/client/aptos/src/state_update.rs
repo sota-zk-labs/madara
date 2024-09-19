@@ -3,8 +3,8 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use anyhow::Context;
-use dc_db::DeoxysBackend;
-use dp_transactions::MAIN_CHAIN_ID;
+use mc_db::MadaraBackend;
+use mp_transactions::MAIN_CHAIN_ID;
 use serde::Deserialize;
 use starknet_types_core::felt::Felt;
 use tokio::time::sleep;
@@ -28,7 +28,7 @@ pub async fn get_initial_state(aptos_client: &AptosClient) -> anyhow::Result<L1S
 
 pub async fn listen_and_update_state(
     aptos_client: &AptosClient,
-    backend: Arc<DeoxysBackend>,
+    backend: Arc<MadaraBackend>,
     block_metrics: &L1BlockMetrics,
     chain_id: Felt,
 ) -> anyhow::Result<()> {
@@ -57,7 +57,7 @@ pub async fn listen_and_update_state(
 }
 
 pub fn update_l1(
-    backend: &DeoxysBackend,
+    backend: &MadaraBackend,
     state_update: L1StateUpdate,
     block_metrics: &L1BlockMetrics,
     chain_id: Felt,
@@ -82,7 +82,7 @@ pub fn update_l1(
 }
 
 pub async fn state_update_worker(
-    backend: Arc<DeoxysBackend>,
+    backend: Arc<MadaraBackend>,
     aptos_client: &AptosClient,
     chain_id: Felt,
 ) -> anyhow::Result<()> {

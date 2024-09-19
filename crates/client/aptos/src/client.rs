@@ -5,7 +5,7 @@ use crate::utils::{new_account, view_request};
 use aptos_sdk::rest_client::Client;
 use aptos_sdk::types::account_address::AccountAddress;
 use aptos_sdk::types::LocalAccount;
-use dc_metrics::{Gauge, MetricsRegistry, PrometheusError, F64};
+use mc_metrics::{Gauge, MetricsRegistry, PrometheusError, F64};
 use starknet_types_core::felt::Felt;
 use url::Url;
 

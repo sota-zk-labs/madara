@@ -1,7 +1,7 @@
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use dc_mempool::{GasPriceProvider, L1DataProvider};
-use dp_utils::wait_or_graceful_shutdown;
+use mc_mempool::{GasPriceProvider, L1DataProvider};
+use mp_utils::wait_or_graceful_shutdown;
 
 use crate::client::AptosClient;
 

@@ -17,7 +17,7 @@ use tokio::task::JoinSet;
 #[derive(Clone)]
 pub struct L1SyncService {
     db_backend: Arc<MadaraBackend>,
-    aptos_client: Option<dc_aptos::client::AptosClient>,
+    aptos_client: Option<mc_aptos::client::AptosClient>,
     eth_client: Option<EthereumClient>,
     l1_gas_provider: GasPriceProvider,
     chain_id: ChainId,
@@ -58,9 +58,9 @@ impl L1SyncService {
             if let Some(l1_rpc_url) = &config.l1_endpoint {
                 let core_address =
                     AccountAddress::from_hex_literal(config.clone().aptos_core_contract.unwrap().as_str())?;
-                let l1_block_metrics = dc_aptos::client::L1BlockMetrics::register(&metrics_handle)?;
+                let l1_block_metrics = mc_aptos::client::L1BlockMetrics::register(&metrics_handle)?;
                 Some(
-                    dc_aptos::client::AptosClient::new(l1_rpc_url.clone(), core_address, l1_block_metrics)
+                    mc_aptos::client::AptosClient::new(l1_rpc_url.clone(), core_address, l1_block_metrics)
                         .await
                         .context("Creating aptos client")?,
                 )
@@ -93,7 +93,7 @@ impl L1SyncService {
                     .clone()
                     .context("AptosClient is required to start the l1 sync service but not provided.")?;
                 // running at-least once before the block production service
-                dc_aptos::l1_gas_price::gas_price_worker(&aptos_client, l1_gas_provider.clone(), gas_price_poll_ms)
+                mc_aptos::l1_gas_price::gas_price_worker(&aptos_client, l1_gas_provider.clone(), gas_price_poll_ms)
                     .await?;
             }
         }
@@ -141,7 +141,7 @@ impl Service for L1SyncService {
 
             let db_backend = Arc::clone(&self.db_backend);
             join_set.spawn(async move {
-                dc_aptos::sync::l1_sync_worker(
+                mc_aptos::sync::l1_sync_worker(
                     db_backend,
                     &aptos_client,
                     chain_id.to_felt(),

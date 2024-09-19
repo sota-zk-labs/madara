@@ -18,6 +18,7 @@ name = "madara"
 [dependencies]
 
 # Madara
+mc-aptos = { workspace = true }
 mc-block-import = { workspace = true }
 mc-db = { workspace = true }
 mc-devnet = { workspace = true }
