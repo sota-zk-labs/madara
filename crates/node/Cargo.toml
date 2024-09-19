@@ -21,6 +21,7 @@ name = "madara"
 [dependencies]
 
 # Madara
+mc-aptos = { workspace = true }
 mc-analytics = { workspace = true }
 mc-block-import = { workspace = true }
 mc-db = { workspace = true }
@@ -35,6 +36,7 @@ mc-telemetry = { workspace = true }
 mp-block = { workspace = true }
 mp-chain-config = { workspace = true }
 mp-utils = { workspace = true }
+mp-convert = { workspace = true }
 
 # Starknet
 blockifier.workspace = true

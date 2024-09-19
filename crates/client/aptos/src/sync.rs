@@ -1,5 +1,5 @@
-use dc_db::DeoxysBackend;
-use dc_mempool::GasPriceProvider;
+use mc_db::MadaraBackend;
+use mc_mempool::GasPriceProvider;
 use starknet_types_core::felt::Felt;
 use std::sync::Arc;
 use std::time::Duration;
@@ -9,7 +9,7 @@ use crate::l1_gas_price::gas_price_worker;
 use crate::state_update::state_update_worker;
 
 pub async fn l1_sync_worker(
-    backend: Arc<DeoxysBackend>,
+    backend: Arc<MadaraBackend>,
     aptos_client: &AptosClient,
     chain_id: Felt,
     l1_gas_provider: GasPriceProvider,

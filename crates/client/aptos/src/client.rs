@@ -5,27 +5,51 @@ use crate::utils::{new_account, view_request};
 use aptos_sdk::rest_client::Client;
 use aptos_sdk::types::account_address::AccountAddress;
 use aptos_sdk::types::LocalAccount;
-use dc_metrics::{Gauge, MetricsRegistry, PrometheusError, F64};
+use mc_analytics::register_gauge_metric_instrument;
+use opentelemetry::{global, KeyValue};
+use opentelemetry::{global::Error, metrics::Gauge};
 use starknet_types_core::felt::Felt;
 use url::Url;
 
 #[derive(Clone, Debug)]
 pub struct L1BlockMetrics {
-    pub l1_block_number: Gauge<F64>,
-    pub l1_gas_price_wei: Gauge<F64>,
-    pub l1_gas_price_strk: Gauge<F64>,
+    pub l1_block_number: Gauge<u64>,
+    pub l1_gas_price_wei: Gauge<u64>,
+    pub l1_gas_price_strk: Gauge<u64>,
 }
 
 impl L1BlockMetrics {
-    pub fn register(registry: &MetricsRegistry) -> Result<Self, PrometheusError> {
-        Ok(Self {
-            l1_block_number: registry
-                .register(Gauge::new("deoxys_l1_block_number", "Gauge for deoxys L1 block number")?)?,
+    pub fn register() -> Result<Self, Error> {
+        let common_scope_attributes = vec![KeyValue::new("crate", "L1 Block")];
+        let aptos_meter = global::meter_with_version(
+            "crates.l1block.opentelemetry",
+            Some("0.17"),
+            Some("https://opentelemetry.io/schemas/1.2.0"),
+            Some(common_scope_attributes.clone()),
+        );
 
-            l1_gas_price_wei: registry.register(Gauge::new("deoxys_l1_gas_price", "Gauge for deoxys L1 gas price")?)?,
-            l1_gas_price_strk: registry
-                .register(Gauge::new("deoxys_l1_gas_price_strk", "Gauge for deoxys L1 gas price in strk")?)?,
-        })
+        let l1_block_number = register_gauge_metric_instrument(
+            &aptos_meter,
+            "l1_block_number".to_string(),
+            "Gauge for madara L1 block number".to_string(),
+            "".to_string(),
+        );
+
+        let l1_gas_price_wei = register_gauge_metric_instrument(
+            &aptos_meter,
+            "l1_gas_price_wei".to_string(),
+            "Gauge for madara L1 gas price in wei".to_string(),
+            "".to_string(),
+        );
+
+        let l1_gas_price_strk = register_gauge_metric_instrument(
+            &aptos_meter,
+            "l1_gas_price_strk".to_string(),
+            "Gauge for madara L1 gas price in strk".to_string(),
+            "".to_string(),
+        );
+
+        Ok(Self { l1_block_number, l1_gas_price_wei, l1_gas_price_strk })
     }
 }
 

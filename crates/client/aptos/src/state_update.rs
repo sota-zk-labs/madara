@@ -3,8 +3,8 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use anyhow::Context;
-use dc_db::DeoxysBackend;
-use dp_transactions::MAIN_CHAIN_ID;
+use mc_db::MadaraBackend;
+use mp_transactions::MAIN_CHAIN_ID;
 use serde::Deserialize;
 use starknet_types_core::felt::Felt;
 use tokio::time::sleep;
@@ -28,7 +28,7 @@ pub async fn get_initial_state(aptos_client: &AptosClient) -> anyhow::Result<L1S
 
 pub async fn listen_and_update_state(
     aptos_client: &AptosClient,
-    backend: Arc<DeoxysBackend>,
+    backend: Arc<MadaraBackend>,
     block_metrics: &L1BlockMetrics,
     chain_id: Felt,
 ) -> anyhow::Result<()> {
@@ -39,7 +39,7 @@ pub async fn listen_and_update_state(
     let block_metrics = block_metrics.clone();
 
     tokio::spawn(async move {
-        log::info!("⭐ Looking for LogStateUpdate event!");
+        tracing::info!("⭐ Looking for LogStateUpdate event!");
         loop {
             while let Some(event) = event_tracker.latest_event(typ.clone()).await {
                 let block_number = event.data.get("block_number").unwrap().as_str().unwrap().parse::<u64>().unwrap();
@@ -57,39 +57,39 @@ pub async fn listen_and_update_state(
 }
 
 pub fn update_l1(
-    backend: &DeoxysBackend,
+    backend: &MadaraBackend,
     state_update: L1StateUpdate,
     block_metrics: &L1BlockMetrics,
     chain_id: Felt,
 ) -> anyhow::Result<()> {
     if state_update.block_number > 500000u64 || chain_id == MAIN_CHAIN_ID {
-        log::info!(
+        tracing::info!(
             "🔄 Updated L1 head #{} ({}) with state root ({})",
             state_update.block_number,
             state_update.block_hash,
             state_update.global_root,
         );
 
-        block_metrics.l1_block_number.set(state_update.block_number as f64);
+        block_metrics.l1_block_number.record(state_update.block_number, &[]);
 
         backend
             .write_last_confirmed_block(state_update.block_number)
             .context("Setting l1 last confirmed block number")?;
-        log::debug!("update_l1: wrote last confirmed block number");
+        tracing::debug!("update_l1: wrote last confirmed block number");
     }
 
     Ok(())
 }
 
 pub async fn state_update_worker(
-    backend: Arc<DeoxysBackend>,
+    backend: Arc<MadaraBackend>,
     aptos_client: &AptosClient,
     chain_id: Felt,
 ) -> anyhow::Result<()> {
     backend.clear_last_confirmed_block().context("Clearing l1 last confirmed block number")?;
-    log::debug!("update_l1: cleared confirmed block number");
+    tracing::debug!("update_l1: cleared confirmed block number");
 
-    log::info!("🚀 Subscribed to L1 state verification");
+    tracing::info!("🚀 Subscribed to L1 state verification");
     let initial_state = get_initial_state(aptos_client).await.context("Getting initial aptos state")?;
     update_l1(&backend, initial_state, &aptos_client.l1_block_metrics, chain_id)?;
 

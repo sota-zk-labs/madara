@@ -1,7 +1,6 @@
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
-
-use dc_mempool::{GasPriceProvider, L1DataProvider};
-use dp_utils::wait_or_graceful_shutdown;
+use mc_mempool::{GasPriceProvider, L1DataProvider};
+use mp_utils::wait_or_graceful_shutdown;
 
 use crate::client::AptosClient;
 
@@ -11,8 +10,8 @@ pub async fn gas_price_worker_once(
     gas_price_poll_ms: Duration,
 ) -> anyhow::Result<()> {
     match update_gas_price(aptos_client, l1_gas_provider.clone()).await {
-        Ok(_) => log::trace!("Updated gas prices"),
-        Err(e) => log::error!("Failed to update gas prices: {:?}", e),
+        Ok(_) => tracing::trace!("Updated gas prices"),
+        Err(e) => tracing::error!("Failed to update gas prices: {:?}", e),
     }
 
     let last_update_timestamp = l1_gas_provider.get_gas_prices_last_update();
@@ -46,10 +45,10 @@ pub async fn gas_price_worker(
 }
 
 async fn update_gas_price(aptos_client: &AptosClient, l1_gas_provider: GasPriceProvider) -> anyhow::Result<()> {
-    let latest_block = aptos_client.provider.get_block_by_height(0, false).await?.into_inner();
+    let latest_block = aptos_client.provider.get_ledger_information().await?.into_inner().block_height;
 
-    let txs = latest_block.transactions.unwrap();
-    let latest_gas_fee = txs.get(txs.len()).unwrap().transaction_info()?.gas_used.0;
+    let txs = aptos_client.provider.get_block_by_height(latest_block, true).await?.into_inner().transactions.unwrap();
+    let latest_gas_fee = txs.last().unwrap().transaction_info()?.gas_used.0;
     let avg_gas_fee =
         txs.clone().into_iter().map(|tx| tx.transaction_info().unwrap().gas_used.0).sum::<u64>() / txs.len() as u64;
 
@@ -69,8 +68,8 @@ async fn update_l1_block_metrics(aptos_client: &AptosClient, l1_gas_provider: Ga
     let eth_gas_price = current_gas_price.eth_l1_gas_price;
 
     // Update the metrics
-    aptos_client.l1_block_metrics.l1_block_number.set(latest_block_number as f64);
-    aptos_client.l1_block_metrics.l1_gas_price_wei.set(eth_gas_price as f64);
+    aptos_client.l1_block_metrics.l1_block_number.record(latest_block_number, &[]);
+    aptos_client.l1_block_metrics.l1_gas_price_wei.record(eth_gas_price as u64, &[]);
 
     // We're ignoring l1_gas_price_strk
     Ok(())

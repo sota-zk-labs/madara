@@ -1,5 +1,5 @@
 [package]
-name = "dc-aptos"
+name = "mc-aptos"
 authors.workspace = true
 homepage.workspace = true
 edition.workspace = true
@@ -11,19 +11,18 @@ license.workspace = true
 alloy = { workspace = true}
 anyhow = { workspace = true }
 aptos-sdk = { workspace = true }
-dc-db = { workspace = true }
-dc-mempool = { workspace = true }
-dc-metrics = { workspace = true }
-dp-transactions = { workspace = true }
-dp-utils = { workspace = true }
-log = { workspace = true }
+mc-analytics = { workspace = true }
+mc-db = { workspace = true }
+mc-mempool = { workspace = true }
+mp-transactions = { workspace = true }
+mp-utils = { workspace = true }
 serde = { workspace = true, features = ["derive"] }
 tokio = { workspace = true }
 url = { workspace = true }
 thiserror = { workspace = true }
 serde_json = { workspace = true }
-
+opentelemetry = { workspace = true }
+tracing = { workspace = true }
 # Starknet
 starknet-types-core = { workspace = true }
 starknet_api = { workspace = true }
-lazy_static = "1.5.0"

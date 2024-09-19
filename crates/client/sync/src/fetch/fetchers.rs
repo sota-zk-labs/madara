@@ -193,7 +193,7 @@ async fn fetch_class_updates(
 
             Ok::<_, L2SyncError>(ClassUpdate::Legacy(LegacyClassUpdate { class_hash, contract_class }))
         }
-        .boxed()
+            .boxed()
     });
 
     let sierra_class_futures = sierra_classes.into_iter().map(|(class_hash, &compiled_class_hash)| {

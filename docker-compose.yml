@@ -1,48 +1,34 @@
 services:
-  madara:
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    container_name: madara
-    restart: unless-stopped
-    ports:
-      - "${RPC_PORT:-9944}:9944"
-    volumes:
-      - $HOME/madara:/var/lib/madara
-    entrypoint: ["tini", "--"]
-    command:
-      [
-        "/usr/local/bin/madara",
-        "--base-path",
-        "/var/lib/madara",
-        "--network",
-        "main",
-        "--l1-endpoint",
-        "${L1_ENDPOINT}",
-      ]
-    profiles:
-      - mainnet
 
-  madara-testnet:
+  madara-devnet:
+#    image: ghcr.io/madara-alliance/madara:latest
     build:
       context: ./
       dockerfile: Dockerfile
-    container_name: madara-testnet
+    container_name: madara-devnet
     restart: unless-stopped
     ports:
       - "${RPC_PORT:-9944}:9944"
-    volumes:
-      - $HOME/madara-testnet:/var/lib/madara-testnet
-    entrypoint: ["tini", "--"]
-    command:
-      [
-        "/usr/local/bin/madara",
-        "--base-path",
-        "/var/lib/madara-testnet",
-        "--network",
-        "test",
-        "--l1-endpoint",
-        "${L1_ENDPOINT}",
-      ]
-    profiles:
-      - testnet
+    command: "--name madara  --base-path ../madara_db --devnet --telemetry-disabled --rpc-port 9944 --rpc-cors=all --rpc-external --no-l1-sync --rpc-methods unsafe"
+
+  explorer:
+    image: sotazklabs/stark_compass_explorer:v0.2.38
+    ports:
+      - "4000:4000"
+    environment:
+      - DB_TYPE=postgresql # set to postgresql if you want to use postgresql, empty otherwise (sqlite).
+      - DISABLE_MAINNET_SYNC=true # Set to true if you want to disable mainnet sync
+      - DISABLE_SEPOLIA_SYNC=false # Set to true if you want to disable sepolia sync
+      - RPC_API_HOST=http://madara-devnet:9944 # Set to your sepolia rpc api host, is will be used in the explorer as "Sepolia"
+      - SEPOLIA_RPC_API_HOST=http://madara-devnet:9944 # Set to your sepolia rpc api host, is will be used in the explorer as "Sepolia"
+      - SECRET_KEY_BASE=JyULoT5cLBifW+XNEuCTVoAb+SaFgQt9j227RN0cKpR3wTsrApGd1HNcgeopemyl
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
+      - PHX_HOST=10.20.10.121
+      - PORT=4000
+
+  postgres:
+    image: postgres:14.6
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
