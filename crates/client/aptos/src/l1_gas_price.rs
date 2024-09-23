@@ -46,10 +46,10 @@ pub async fn gas_price_worker(
 }
 
 async fn update_gas_price(aptos_client: &AptosClient, l1_gas_provider: GasPriceProvider) -> anyhow::Result<()> {
-    let latest_block = aptos_client.provider.get_block_by_height(0, false).await?.into_inner();
+    let latest_block = aptos_client.provider.get_ledger_information().await?.into_inner().block_height;
 
-    let txs = latest_block.transactions.unwrap();
-    let latest_gas_fee = txs.get(txs.len()).unwrap().transaction_info()?.gas_used.0;
+    let txs = aptos_client.provider.get_block_by_height(latest_block, true).await?.into_inner().transactions.unwrap();
+    let latest_gas_fee = txs.last().unwrap().transaction_info()?.gas_used.0;
     let avg_gas_fee =
         txs.clone().into_iter().map(|tx| tx.transaction_info().unwrap().gas_used.0).sum::<u64>() / txs.len() as u64;
 
