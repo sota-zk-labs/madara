@@ -11,12 +11,7 @@ pub struct GasPriceProvider {
 impl GasPriceProvider {
     pub fn new() -> Self {
         GasPriceProvider {
-            gas_prices: Arc::new(Mutex::new(GasPrices {
-                eth_l1_gas_price: 1,
-                strk_l1_gas_price: 1,
-                eth_l1_data_gas_price: 1,
-                strk_l1_data_gas_price: 1,
-            })),
+            gas_prices: Arc::new(Mutex::new(GasPrices::default())),
             last_update: Arc::new(Mutex::new(SystemTime::now())),
         }
     }
