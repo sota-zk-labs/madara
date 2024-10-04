@@ -41,8 +41,9 @@ services:
         "/var/lib/madara-testnet",
         "--network",
         "test",
-        "--l1-endpoint",
-        "${L1_ENDPOINT}",
+        "--preset",
+        "test",
+        "--no-l1-sync",
       ]
     profiles:
       - testnet
@@ -51,7 +52,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    container_name: madara-testnet
+    container_name: madara-devnet
     restart: unless-stopped
     ports:
       - "${RPC_PORT:-9944}:9944"

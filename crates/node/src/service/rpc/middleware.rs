@@ -16,7 +16,6 @@ use hyper::{Body, Response};
 use jsonrpsee::server::middleware::rpc::RpcServiceT;
 use jsonrpsee::types::{ErrorObject, Request};
 use jsonrpsee::MethodResponse;
-use mc_rpc::utils::display_internal_server_error;
 use serde_json::{json, Value};
 use tower::{Layer, Service};
 
@@ -156,7 +155,7 @@ where
 
             rp
         }
-            .boxed()
+        .boxed()
     }
 }
 
@@ -232,33 +231,26 @@ where
                 Err(e) => {
                     let error = match e {
                         VersionMiddlewareError::InvalidUrlFormat => {
-                            ErrorObject::borrowed(-32600, "Invalid URL format. Use /rpc/v{version}", None)
+                            ErrorObject::owned(-32600, "Invalid URL format. Use /rpc/v{version}", None::<()>)
                         }
                         VersionMiddlewareError::InvalidVersion => {
-                            ErrorObject::borrowed(-32600, "Invalid RPC version specified", None)
+                            ErrorObject::owned(-32600, "Invalid RPC version specified", None::<()>)
                         }
                         VersionMiddlewareError::InvalidRequestFormat => {
-                            ErrorObject::borrowed(-32600, "Invalid JSON-RPC request format", None)
+                            ErrorObject::owned(-32600, "Invalid JSON-RPC request format", None::<()>)
                         }
                         VersionMiddlewareError::UnsupportedVersion => {
-                            ErrorObject::borrowed(-32601, "Unsupported RPC version specified", None)
+                            ErrorObject::owned(-32601, "Unsupported RPC version specified", None::<()>)
                         }
-                        VersionMiddlewareError::JsonParseError(err) => {
-                            ErrorObject::owned(-32601, "JSON Parsing Error", Some(format!("{err:#}")))
-                        }
-                        VersionMiddlewareError::BodyReadError(err) => {
-                            display_internal_server_error(format!("Version middleware error: {err:#}"));
-                            ErrorObject::borrowed(-32602, "Internal Server Error", None)
-                        }
+                        _ => ErrorObject::owned(-32603, "Internal error", None::<()>),
                     };
 
-                    // TODO: this is NOT correct :/
                     let body = json!({
                         "jsonrpc": "2.0",
                         "error": error,
                         "id": 0
                     })
-                        .to_string();
+                    .to_string();
 
                     Ok(Response::builder()
                         .header("Content-Type", "application/json")
@@ -270,7 +262,6 @@ where
     }
 }
 
-// TODO: we shouldnt consume the whole body, find another way
 async fn add_rpc_version_to_method(req: &mut hyper::Request<Body>) -> Result<(), VersionMiddlewareError> {
     let path = req.uri().path().to_string();
     let version = RpcVersion::from_request_path(&path)?;
