@@ -1,24 +1,22 @@
-MADARA_DEVNET_NAME = ""
-MADARA_DEVNET_IMAGE = ""
-MADARA_GRPC_PORT = ""
+MADARA_DEVNET_IMAGE = "tranduy1dol/madara:devnet"
+MADARA_DEVNET_SERVICE_NAME = "madara_devnet"
+
+MADARA_GRPC_PORT_NAME = ""
+MADARA_GRPC_PORT_NUMBER = ""
 MADARA_GRPC_PROTOCOL_NAME = ""
 
 def run(plan):
     devnet = plan.add_service(
-        name = MADARA_DEVNET_NAME,
+        name = MADARA_DEVNET_SERVICE_NAME,
         config = ServiceConfig(
             image = MADARA_DEVNET_IMAGE,
             ports = {
                 MADARA_PORT_NAME: PortSpec(
-                    number = MADARA_GRPC_PORT,
+                    number = MADARA_GRPC_PORT_NUMBER,
                     application_protocol = MADARA_GRPC_PROTOCOL_NAME,
                 )
-            }
-        )
-    )
-
-    exec_recipe = ExecRecipe(
-        command = [
+            },
+        cmd = [
             "/usr/local/bin/madara",
             "--base-path",
             "/var/lib/madara-devnet-db",
@@ -30,12 +28,16 @@ def run(plan):
             "--devnet",
             "--override-devnet-chain-id",
             "--no-l1-sync"
-        ]
+            ]
+        )
     )
 
-    result = plan.exec(
-        service_name = MADARA_DEVNET_NAME,
-        recipe = exec_recipe
+    madara_service_url = get_service_url(
+        MADARA_GRPC_PROTOCOL_NAME,
+        devnet,
+        MADARA_GRPC_PORT
     )
-
     return
+
+def get_service_url(protocol, service, api_port):
+    return "%s://%s:%d" % (protocol, service.ip_address, api_port)
