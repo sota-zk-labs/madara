@@ -1,8 +1,8 @@
 # Stage 1: Build the application
-FROM rust:1.78 AS builder
+FROM rust:1.79 AS builder
 # Install build dependencies
 RUN apt-get -y update && \
-    apt-get install -y clang && \
+    apt-get install -y clang libudev-dev && \
     apt-get autoremove -y; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/*
@@ -11,6 +11,7 @@ WORKDIR /usr/src/madara/
 # Copy the source code into the container
 COPY Cargo.toml Cargo.lock ./
 COPY crates crates
+COPY .cargo .cargo
 COPY cairo cairo
 COPY cairo_0 cairo_0
 

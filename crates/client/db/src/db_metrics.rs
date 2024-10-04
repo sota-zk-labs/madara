@@ -31,4 +31,20 @@ impl DbMetrics {
 
         storage_size
     }
+    /// Returns the total storage size
+    pub fn update(&self, db: &DB) -> u64 {
+        let mut storage_size = 0;
+        for &column in Column::ALL.iter() {
+            let cf_handle = db.get_column(column);
+            let cf_metadata = db.get_column_family_metadata_cf(&cf_handle);
+            let column_size = cf_metadata.size;
+            storage_size += column_size;
+            self.column_sizes.with_label_values(&[column.rocksdb_name()]).set(column_size as i64);
+        }
+
+        let size_gb = storage_size as f64 / (1024 * 1024 * 1024) as f64;
+        self.db_size.set(size_gb);
+
+        storage_size
+    }
 }

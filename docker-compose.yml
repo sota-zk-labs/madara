@@ -41,8 +41,37 @@ services:
         "/var/lib/madara-testnet",
         "--network",
         "test",
-        "--l1-endpoint",
-        "${L1_ENDPOINT}",
+        "--preset",
+        "test",
+        "--no-l1-sync",
       ]
     profiles:
       - testnet
+
+  madara-devnet:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: madara-devnet
+    restart: unless-stopped
+    ports:
+      - "${RPC_PORT:-9944}:9944"
+    volumes:
+      - $HOME/madara-testnet:/var/lib/madara-testnet
+    entrypoint: [ "tini", "--" ]
+    command:
+      [
+        "/usr/local/bin/madara",
+        "--base-path",
+        "/var/lib/madara-devnet-db",
+        "--network",
+        "devnet",
+        "--preset",
+        "sepolia",
+        "--authority",
+        "--devnet",
+        "--override-devnet-chain-id",
+        "--no-l1-sync"
+      ]
+    profiles:
+      - devnet
