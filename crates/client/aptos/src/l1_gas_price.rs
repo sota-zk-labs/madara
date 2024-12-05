@@ -1,5 +1,6 @@
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use mc_mempool::{GasPriceProvider, L1DataProvider};
+use mp_utils::service::ServiceContext;
 use mp_utils::wait_or_graceful_shutdown;
 
 use crate::client::AptosClient;
@@ -33,11 +34,12 @@ pub async fn gas_price_worker(
     aptos_client: &AptosClient,
     l1_gas_provider: GasPriceProvider,
     gas_price_poll_ms: Duration,
+    ctx: ServiceContext,
 ) -> anyhow::Result<()> {
     l1_gas_provider.update_last_update_timestamp();
     let mut interval = tokio::time::interval(gas_price_poll_ms);
     interval.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
-    while wait_or_graceful_shutdown(interval.tick()).await.is_some() {
+    while wait_or_graceful_shutdown(interval.tick(), &ctx).await.is_some() {
         gas_price_worker_once(aptos_client, l1_gas_provider.clone(), gas_price_poll_ms).await?;
     }
 

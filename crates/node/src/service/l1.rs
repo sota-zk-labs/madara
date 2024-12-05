@@ -97,7 +97,7 @@ impl L1SyncService {
                     .clone()
                     .context("AptosClient is required to start the l1 sync service but not provided.")?;
                 // running at-least once before the block production service
-                mc_aptos::l1_gas_price::gas_price_worker(&aptos_client, l1_gas_provider.clone(), gas_price_poll)
+                mc_aptos::l1_gas_price::gas_price_worker_once(&aptos_client, l1_gas_provider.clone(), gas_price_poll)
                     .await?;
             }
         }
@@ -141,9 +141,7 @@ impl Service for L1SyncService {
                 )
                 .await
             });
-        }
-
-        if let Some(aptos_client) = self.aptos_client.take() {
+        } else if let Some(aptos_client) = self.aptos_client.take() {
             let L1SyncService { l1_gas_provider, chain_id, gas_price_sync_disabled, gas_price_poll, .. } =
                 self.clone();
 
@@ -158,6 +156,7 @@ impl Service for L1SyncService {
                     l1_gas_provider,
                     gas_price_sync_disabled,
                     gas_price_poll,
+                    ctx
                 )
                 .await
             });
