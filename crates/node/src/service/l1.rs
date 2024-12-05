@@ -7,7 +7,7 @@ use mc_eth::client::{EthereumClient, L1BlockMetrics};
 use mc_mempool::{GasPriceProvider, Mempool};
 use mp_convert::ToFelt;
 use mp_block::H160;
-use mp_utils::service::Service;
+use mp_utils::service::{MadaraService, Service, ServiceContext};
 use starknet_api::core::ChainId;
 use std::sync::Arc;
 use std::time::Duration;
@@ -37,7 +37,7 @@ impl L1SyncService {
         devnet: bool,
         mempool: Arc<Mempool>,
     ) -> anyhow::Result<Self> {
-        let eth_client = if config.l1_type == L1Type::Ethereum && !config.sync_l1_disabled {
+        let eth_client = if config.l1_type == L1Type::Ethereum && !config.sync_l1_disabled && (config.l1_endpoint.is_some() || !devnet) {
             if let Some(l1_rpc_url) = &config.l1_endpoint {
                 let core_address = Address::from_slice(l1_core_address.as_bytes());
                 let l1_block_metrics = L1BlockMetrics::register().expect("Registering metrics");
@@ -117,8 +117,8 @@ impl L1SyncService {
 
 #[async_trait::async_trait]
 impl Service for L1SyncService {
-    async fn start(&mut self, join_set: &mut JoinSet<anyhow::Result<()>>) -> anyhow::Result<()> {
-        let L1SyncService {     mempool, .. } =
+    async fn start(&mut self, join_set: &mut JoinSet<anyhow::Result<()>>, ctx: ServiceContext) -> anyhow::Result<()> {
+        let L1SyncService { l1_gas_provider, chain_id, gas_price_sync_disabled, gas_price_poll, mempool, .. } =
             self.clone();
 
         if let Some(eth_client) = self.eth_client.take() {
@@ -137,6 +137,7 @@ impl Service for L1SyncService {
                     gas_price_sync_disabled,
                     gas_price_poll,
                     mempool,
+                    ctx,
                 )
                 .await
             });
@@ -163,5 +164,9 @@ impl Service for L1SyncService {
         }
 
         Ok(())
+    }
+
+    fn id(&self) -> MadaraService {
+        MadaraService::L1Sync
     }
 }
