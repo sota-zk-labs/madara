@@ -2697,7 +2697,7 @@ dependencies = [
  "serde_json",
  "sha2 0.10.8",
  "sha3 0.10.8",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "starknet_api",
  "strum 0.25.0",
  "strum_macros 0.25.3",
@@ -2759,7 +2759,7 @@ dependencies = [
  "serde",
  "slotmap",
  "smallvec",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "thiserror 2.0.4",
 ]
 
@@ -3714,7 +3714,7 @@ dependencies = [
  "rand 0.8.5",
  "sha2 0.10.8",
  "smol_str 0.2.2",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "thiserror 1.0.69",
 ]
 
@@ -3903,7 +3903,7 @@ dependencies = [
  "serde_json",
  "sha3 0.10.8",
  "smol_str 0.2.2",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "thiserror 1.0.69",
 ]
 
@@ -4197,7 +4197,7 @@ dependencies = [
  "itertools 0.12.1",
  "num-bigint 0.4.6",
  "num-traits",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "thiserror 1.0.69",
 ]
 
@@ -4357,7 +4357,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smol_str 0.2.2",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "thiserror 1.0.69",
 ]
 
@@ -4380,7 +4380,7 @@ dependencies = [
  "serde_json",
  "sha3 0.10.8",
  "smol_str 0.2.2",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "thiserror 1.0.69",
 ]
 
@@ -4593,7 +4593,7 @@ dependencies = [
  "sha2 0.10.8",
  "sha3 0.10.8",
  "starknet-crypto 0.6.2",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "thiserror-no-std",
  "zip",
 ]
@@ -7903,7 +7903,6 @@ dependencies = [
  "aptos-sdk",
  "async-trait",
  "blockifier",
- "chrono",
  "clap 4.5.22",
  "fdlimit",
  "futures",
@@ -7925,7 +7924,6 @@ dependencies = [
  "mc-telemetry",
  "mp-block",
  "mp-chain-config",
- "mp-convert",
  "mp-utils",
  "opentelemetry",
  "opentelemetry-appender-tracing",
@@ -7939,7 +7937,6 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_yaml 0.9.34+deprecated",
- "starknet-providers",
  "starknet_api",
  "thiserror 2.0.4",
  "tokio",
@@ -8028,7 +8025,7 @@ dependencies = [
  "opentelemetry",
  "serde",
  "serde_json",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "starknet_api",
  "thiserror 2.0.4",
  "tokio",
@@ -8063,8 +8060,7 @@ dependencies = [
  "rayon",
  "rstest 0.18.2",
  "serde",
- "starknet-core",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "starknet_api",
  "tempfile",
  "thiserror 2.0.4",
@@ -8101,8 +8097,7 @@ dependencies = [
  "rayon",
  "rocksdb",
  "serde",
- "starknet-core",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "starknet_api",
  "tempfile",
  "thiserror 2.0.4",
@@ -8144,7 +8139,8 @@ dependencies = [
  "serde_json",
  "starknet-core",
  "starknet-signers",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
+ "starknet-types-rpc",
  "starknet_api",
  "tokio",
  "tracing",
@@ -8166,7 +8162,7 @@ dependencies = [
  "starknet",
  "starknet-core",
  "starknet-providers",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "tempfile",
  "tokio",
  "tracing",
@@ -8204,7 +8200,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serial_test",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "starknet_api",
  "tempfile",
  "thiserror 2.0.4",
@@ -8237,8 +8233,8 @@ dependencies = [
  "opentelemetry-stdout",
  "opentelemetry_sdk",
  "rstest 0.18.2",
- "starknet-core",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
+ "starknet-types-rpc",
  "starknet_api",
  "thiserror 2.0.4",
  "tokio",
@@ -8268,7 +8264,8 @@ dependencies = [
  "serde",
  "serde_json",
  "starknet-core",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
+ "starknet-types-rpc",
  "tokio",
  "tokio-util",
  "tower 0.4.13",
@@ -8295,8 +8292,8 @@ dependencies = [
  "rstest 0.18.2",
  "serde",
  "serde_json",
- "starknet-core",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
+ "starknet-types-rpc",
  "thiserror 2.0.4",
  "tokio",
  "tokio-util",
@@ -8325,7 +8322,6 @@ dependencies = [
  "mp-state-update",
  "mp-transactions",
  "mp-utils",
- "once_cell",
  "opentelemetry",
  "opentelemetry-appender-tracing",
  "opentelemetry-otlp",
@@ -8336,8 +8332,8 @@ dependencies = [
  "proptest-derive 0.5.0",
  "rstest 0.18.2",
  "serde_json",
- "starknet-core",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
+ "starknet-types-rpc",
  "starknet_api",
  "thiserror 2.0.4",
  "tokio",
@@ -8373,9 +8369,7 @@ dependencies = [
  "rstest 0.18.2",
  "serde",
  "serde_json",
- "serde_with",
- "starknet-core",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "starknet-types-rpc",
  "starknet_api",
  "thiserror 2.0.4",
@@ -8403,9 +8397,7 @@ dependencies = [
  "mp-block",
  "mp-chain-config",
  "mp-class",
- "mp-convert",
  "mp-gateway",
- "mp-transactions",
  "mp-utils",
  "opentelemetry",
  "opentelemetry-appender-tracing",
@@ -8416,8 +8408,7 @@ dependencies = [
  "regex",
  "rstest 0.18.2",
  "serde_json",
- "starknet-core",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "starknet_api",
  "tempfile",
  "thiserror 2.0.4",
@@ -9211,8 +9202,7 @@ dependencies = [
  "opentelemetry_sdk",
  "primitive-types 0.12.2",
  "serde",
- "starknet-core",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "starknet-types-rpc",
  "thiserror 2.0.4",
  "tracing",
@@ -9234,7 +9224,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_yaml 0.9.34+deprecated",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "starknet_api",
  "thiserror 2.0.4",
  "tracing",
@@ -9245,6 +9235,7 @@ dependencies = [
 name = "mp-class"
 version = "0.7.0"
 dependencies = [
+ "base64 0.22.1",
  "blockifier",
  "cairo-lang-starknet 1.0.0-alpha.6",
  "cairo-lang-starknet 1.0.0-rc0",
@@ -9263,7 +9254,8 @@ dependencies = [
  "serde_json",
  "starknet-core",
  "starknet-providers",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
+ "starknet-types-rpc",
  "thiserror 2.0.4",
  "tokio",
 ]
@@ -9275,9 +9267,10 @@ dependencies = [
  "assert_matches",
  "primitive-types 0.12.2",
  "serde",
+ "serde_json",
  "serde_with",
  "starknet-core",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "starknet_api",
  "thiserror 2.0.4",
 ]
@@ -9287,6 +9280,7 @@ name = "mp-gateway"
 version = "0.7.0"
 dependencies = [
  "anyhow",
+ "base64 0.22.1",
  "http 1.2.0",
  "hyper 1.5.1",
  "mc-block-import",
@@ -9297,11 +9291,14 @@ dependencies = [
  "mp-receipt",
  "mp-state-update",
  "mp-transactions",
+ "primitive-types 0.12.2",
  "serde",
  "serde_json",
  "serde_with",
+ "sha3 0.10.8",
  "starknet-core",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
+ "starknet-types-rpc",
  "thiserror 2.0.4",
  "url",
 ]
@@ -9313,10 +9310,12 @@ dependencies = [
  "bincode 1.3.3",
  "blockifier",
  "cairo-vm",
+ "primitive-types 0.12.2",
  "rstest 0.18.2",
  "serde",
  "starknet-core",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
+ "starknet-types-rpc",
  "starknet_api",
  "thiserror 2.0.4",
  "tracing",
@@ -9329,8 +9328,8 @@ dependencies = [
  "bincode 1.3.3",
  "mp-convert",
  "serde",
- "starknet-core",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
+ "starknet-types-rpc",
 ]
 
 [[package]]
@@ -9339,6 +9338,7 @@ version = "0.7.0"
 dependencies = [
  "anyhow",
  "assert_matches",
+ "base64 0.22.1",
  "blockifier",
  "cairo-lang-starknet-classes",
  "cairo-lang-utils 2.8.4",
@@ -9351,7 +9351,8 @@ dependencies = [
  "serde_json",
  "serde_with",
  "starknet-core",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
+ "starknet-types-rpc",
  "starknet_api",
  "thiserror 2.0.4",
  "tracing",
@@ -9378,7 +9379,7 @@ dependencies = [
  "serde_yaml 0.9.34+deprecated",
  "starknet-core",
  "starknet-crypto 0.7.3",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "tokio",
  "tokio-util",
  "tracing",
@@ -12560,7 +12561,7 @@ dependencies = [
  "serde_with",
  "sha3 0.10.8",
  "starknet-crypto 0.7.2",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
 ]
 
 [[package]]
@@ -12617,7 +12618,7 @@ dependencies = [
  "rfc6979",
  "sha2 0.10.8",
  "starknet-curve 0.5.1 (git+https://github.com/kasarlabs/starknet-rs.git?branch=fork)",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "zeroize",
 ]
 
@@ -12636,7 +12637,7 @@ dependencies = [
  "rfc6979",
  "sha2 0.10.8",
  "starknet-curve 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "zeroize",
 ]
 
@@ -12675,7 +12676,7 @@ version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bcde6bd74269b8161948190ace6cf069ef20ac6e79cd2ba09b320efa7500b6de"
 dependencies = [
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
 ]
 
 [[package]]
@@ -12683,7 +12684,7 @@ name = "starknet-curve"
 version = "0.5.1"
 source = "git+https://github.com/kasarlabs/starknet-rs.git?branch=fork#70e1ee45dc701afc2a7629bf88bb5d90a93d51a7"
 dependencies = [
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
 ]
 
 [[package]]
@@ -12762,13 +12763,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "starknet-types-core"
+version = "0.1.7"
+source = "git+https://github.com/jbcaron/types-rs.git?branch=fork#1b93f270348ccd874dff7e1bb30ac2224a24f811"
+dependencies = [
+ "lambdaworks-crypto",
+ "lambdaworks-math",
+ "num-bigint 0.4.6",
+ "num-integer",
+ "num-traits",
+ "serde",
+]
+
+[[package]]
 name = "starknet-types-rpc"
 version = "0.7.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2d717a1b5ff67fa9ec13b09381513a4824fdd73ec5440fcc116088be6744aac4"
+source = "git+https://github.com/jbcaron/types-rs.git?branch=fork#1b93f270348ccd874dff7e1bb30ac2224a24f811"
 dependencies = [
  "serde",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/jbcaron/types-rs.git?branch=fork)",
 ]
 
 [[package]]
@@ -12789,7 +12802,7 @@ dependencies = [
  "serde_json",
  "sha3 0.10.8",
  "starknet-crypto 0.5.2",
- "starknet-types-core",
+ "starknet-types-core 0.1.7 (git+https://github.com/kasarlabs/types-rs.git?branch=feat-deserialize-v0.1.7)",
  "strum 0.24.1",
  "strum_macros 0.24.3",
  "thiserror 1.0.69",
