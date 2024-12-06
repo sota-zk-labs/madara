@@ -1,0 +1,29 @@
+[package]
+name = "mc-aptos"
+authors.workspace = true
+homepage.workspace = true
+edition.workspace = true
+repository.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+alloy = { workspace = true}
+anyhow = { workspace = true }
+aptos-sdk = { workspace = true }
+mc-analytics = { workspace = true }
+mc-db = { workspace = true }
+mc-mempool = { workspace = true }
+mp-convert = {workspace = true}
+mp-transactions = { workspace = true }
+mp-utils = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+tokio = { workspace = true }
+url = { workspace = true }
+thiserror = { workspace = true }
+serde_json = { workspace = true }
+opentelemetry = { workspace = true }
+tracing = { workspace = true }
+# Starknet
+starknet-types-core = { workspace = true }
+starknet_api = { workspace = true }
