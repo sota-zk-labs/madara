@@ -5,7 +5,6 @@ use aptos_sdk::types::account_address::AccountAddress;
 use mc_db::{DatabaseService, MadaraBackend};
 use mc_eth::client::{EthereumClient, L1BlockMetrics};
 use mc_mempool::{GasPriceProvider, Mempool};
-use mp_convert::ToFelt;
 use mp_block::H160;
 use mp_utils::service::{MadaraService, Service, ServiceContext};
 use starknet_api::core::ChainId;
@@ -118,11 +117,8 @@ impl L1SyncService {
 #[async_trait::async_trait]
 impl Service for L1SyncService {
     async fn start(&mut self, join_set: &mut JoinSet<anyhow::Result<()>>, ctx: ServiceContext) -> anyhow::Result<()> {
-        let L1SyncService { l1_gas_provider, chain_id, gas_price_sync_disabled, gas_price_poll, mempool, .. } =
-            self.clone();
-
         if let Some(eth_client) = self.eth_client.take() {
-            let L1SyncService { l1_gas_provider, chain_id, gas_price_sync_disabled, gas_price_poll, .. } =
+            let L1SyncService { l1_gas_provider, chain_id, gas_price_sync_disabled, gas_price_poll, mempool, .. } =
                 self.clone();
 
             // enabled
@@ -142,7 +138,7 @@ impl Service for L1SyncService {
                 .await
             });
         } else if let Some(aptos_client) = self.aptos_client.take() {
-            let L1SyncService { l1_gas_provider, chain_id, gas_price_sync_disabled, gas_price_poll, .. } =
+            let L1SyncService { l1_gas_provider, chain_id, gas_price_sync_disabled, gas_price_poll, mempool, .. } =
                 self.clone();
 
             // enabled
@@ -152,7 +148,7 @@ impl Service for L1SyncService {
                 mc_aptos::sync::l1_sync_worker(
                     db_backend,
                     &aptos_client,
-                    chain_id.to_felt(),
+                    chain_id,
                     l1_gas_provider,
                     gas_price_sync_disabled,
                     gas_price_poll,

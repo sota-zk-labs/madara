@@ -8020,6 +8020,7 @@ dependencies = [
  "mc-analytics",
  "mc-db",
  "mc-mempool",
+ "mp-convert",
  "mp-transactions",
  "mp-utils",
  "opentelemetry",

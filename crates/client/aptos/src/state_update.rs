@@ -6,9 +6,10 @@ use anyhow::Context;
 use mc_db::MadaraBackend;
 use mp_transactions::MAIN_CHAIN_ID;
 use serde::Deserialize;
+use starknet_api::core::ChainId;
 use starknet_types_core::felt::Felt;
 use tokio::time::sleep;
-
+use mp_convert::ToFelt;
 use crate::client::{AptosClient, L1BlockMetrics};
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
@@ -30,7 +31,7 @@ pub async fn listen_and_update_state(
     aptos_client: &AptosClient,
     backend: Arc<MadaraBackend>,
     block_metrics: &L1BlockMetrics,
-    chain_id: Felt,
+    chain_id: ChainId,
 ) -> anyhow::Result<()> {
     let typ = format!("{}::starknet_validity::LogStateUpdate", aptos_client.clone().l1_core_contract.address());
 
@@ -47,7 +48,7 @@ pub async fn listen_and_update_state(
                 let block_hash = Felt::from_str(event.data.get("block_hash").unwrap().as_str().unwrap()).unwrap();
 
                 let format_event = L1StateUpdate { block_number, global_root, block_hash };
-                update_l1(&backend, format_event, &block_metrics, chain_id).expect("TODO: panic message");
+                update_l1(&backend, format_event, &block_metrics, chain_id.clone()).expect("TODO: panic message");
             }
             sleep(Duration::from_secs(5)).await;
         }
@@ -60,9 +61,12 @@ pub fn update_l1(
     backend: &MadaraBackend,
     state_update: L1StateUpdate,
     block_metrics: &L1BlockMetrics,
-    chain_id: Felt,
+    chain_id: ChainId,
 ) -> anyhow::Result<()> {
-    if state_update.block_number > 500000u64 || chain_id == MAIN_CHAIN_ID {
+    // This is a provisory check to avoid updating the state with an L1StateUpdate that should not have been detected
+    //
+    // TODO: Remove this check when the L1StateUpdate is properly verified
+    if state_update.block_number > 500000u64 || chain_id.to_felt() == MAIN_CHAIN_ID  {
         tracing::info!(
             "🔄 Updated L1 head #{} ({}) with state root ({})",
             state_update.block_number,
@@ -84,14 +88,14 @@ pub fn update_l1(
 pub async fn state_update_worker(
     backend: Arc<MadaraBackend>,
     aptos_client: &AptosClient,
-    chain_id: Felt,
+    chain_id: ChainId,
 ) -> anyhow::Result<()> {
     backend.clear_last_confirmed_block().context("Clearing l1 last confirmed block number")?;
     tracing::debug!("update_l1: cleared confirmed block number");
 
     tracing::info!("🚀 Subscribed to L1 state verification");
     let initial_state = get_initial_state(aptos_client).await.context("Getting initial aptos state")?;
-    update_l1(&backend, initial_state, &aptos_client.l1_block_metrics, chain_id)?;
+    update_l1(&backend, initial_state, &aptos_client.l1_block_metrics, chain_id.clone())?;
 
     listen_and_update_state(aptos_client, backend, &aptos_client.l1_block_metrics, chain_id)
         .await
