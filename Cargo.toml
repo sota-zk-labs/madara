@@ -22,6 +22,7 @@ members = [
   "crates/primitives/state_update",
   "crates/primitives/chain_config",
   "crates/primitives/utils",
+  "crates/client/aptos",
   "crates/proc-macros",
   "crates/tests",
   "crates/cairo-test-contracts",
@@ -29,6 +30,7 @@ members = [
 resolver = "2"
 # Everything except test-related packages, so that they are not compiled when doing `cargo build`.
 default-members = [
+  "crates/client/aptos",
   "crates/client/db",
   "crates/client/exec",
   "crates/client/sync",
@@ -117,6 +119,7 @@ mp-utils = { path = "crates/primitives/utils", default-features = false }
 mp-chain-config = { path = "crates/primitives/chain_config", default-features = false }
 
 # Madara client
+mc-aptos = { path = "crates/client/aptos" }
 mc-analytics = { path = "crates/client/analytics" }
 mc-telemetry = { path = "crates/client/telemetry" }
 mc-db = { path = "crates/client/db" }
@@ -238,6 +241,8 @@ tracing-subscriber = { version = "0.3.18", features = [
 ] }
 tracing-opentelemetry = "0.26.0"
 
+aptos-sdk = { git = "https://github.com/aptos-labs/aptos-core", rev = "6a130c1cca274a5cfdb4a65b441cd5fe61b6c15b", package = "aptos-sdk"  }
+
 [patch.crates-io]
 rocksdb = { git = "https://github.com/madara-alliance/rust-rocksdb", branch = "read-options-set-raw-snapshot" }
 librocksdb-sys = { git = "https://github.com/madara-alliance/rust-rocksdb", branch = "read-options-set-raw-snapshot" }
@@ -246,3 +251,6 @@ starknet-types-core = { git = "https://github.com/kasarlabs/types-rs.git", branc
 starknet-types-rpc = { git = "https://github.com/jbcaron/types-rs.git", branch = "fork" }
 
 starknet-core = { git = "https://github.com/kasarlabs/starknet-rs.git", branch = "fork" }
+
+merlin = { git = "https://github.com/aptos-labs/merlin" }
+x25519-dalek = { git = "https://github.com/Tranduy1dol/x25519-dalek", branch = "zeroize_v1.7" }

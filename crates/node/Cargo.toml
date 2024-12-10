@@ -21,6 +21,7 @@ name = "madara"
 [dependencies]
 
 # Madara
+mc-aptos = { workspace = true }
 mc-analytics = { workspace = true }
 mc-block-import = { workspace = true }
 mc-db = { workspace = true }
@@ -42,6 +43,7 @@ starknet_api.workspace = true
 
 # Other
 alloy.workspace = true
+aptos-sdk.workspace = true
 anyhow.workspace = true
 async-trait.workspace = true
 clap = { workspace = true, features = ["derive", "env"] }
