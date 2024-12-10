@@ -1,12 +1,12 @@
-use mc_db::MadaraBackend;
-use mc_mempool::GasPriceProvider;
-use std::sync::Arc;
-use std::time::Duration;
-use starknet_api::core::ChainId;
-use mp_utils::service::ServiceContext;
 use crate::client::AptosClient;
 use crate::l1_gas_price::gas_price_worker;
 use crate::state_update::state_update_worker;
+use mc_db::MadaraBackend;
+use mc_mempool::GasPriceProvider;
+use mp_utils::service::ServiceContext;
+use starknet_api::core::ChainId;
+use std::sync::Arc;
+use std::time::Duration;
 
 pub async fn l1_sync_worker(
     backend: Arc<MadaraBackend>,
@@ -23,6 +23,6 @@ pub async fn l1_sync_worker(
         }
         Ok(())
     })?;
-
+    // Sync message
     Ok(())
 }

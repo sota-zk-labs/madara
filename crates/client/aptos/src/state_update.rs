@@ -2,15 +2,15 @@ use std::str::FromStr;
 use std::sync::Arc;
 use std::time::Duration;
 
+use crate::client::{AptosClient, L1BlockMetrics};
 use anyhow::Context;
 use mc_db::MadaraBackend;
+use mp_convert::ToFelt;
 use mp_transactions::MAIN_CHAIN_ID;
 use serde::Deserialize;
 use starknet_api::core::ChainId;
 use starknet_types_core::felt::Felt;
 use tokio::time::sleep;
-use mp_convert::ToFelt;
-use crate::client::{AptosClient, L1BlockMetrics};
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
 pub struct L1StateUpdate {
@@ -40,9 +40,9 @@ pub async fn listen_and_update_state(
     let block_metrics = block_metrics.clone();
 
     tokio::spawn(async move {
-        tracing::info!("⭐ Looking for LogStateUpdate event!");
+        tracing::info!("⭐  Looking for LogStateUpdate event!");
         loop {
-            while let Some(event) = event_tracker.latest_event(typ.clone()).await {
+            while let Some(event) = event_tracker.latest_event(&backend, typ.clone()).await {
                 let block_number = event.data.get("block_number").unwrap().as_str().unwrap().parse::<u64>().unwrap();
                 let global_root = Felt::from_str(event.data.get("global_root").unwrap().as_str().unwrap()).unwrap();
                 let block_hash = Felt::from_str(event.data.get("block_hash").unwrap().as_str().unwrap()).unwrap();
@@ -66,21 +66,20 @@ pub fn update_l1(
     // This is a provisory check to avoid updating the state with an L1StateUpdate that should not have been detected
     //
     // TODO: Remove this check when the L1StateUpdate is properly verified
-    if state_update.block_number > 500000u64 || chain_id.to_felt() == MAIN_CHAIN_ID  {
-        tracing::info!(
-            "🔄 Updated L1 head #{} ({}) with state root ({})",
-            state_update.block_number,
-            state_update.block_hash,
-            state_update.global_root,
-        );
+    // tracing::info!("Start update l1! state = {:#?}", state_update);
+    // if state_update.block_number > 500000u64 || chain_id.to_felt() == MAIN_CHAIN_ID  {
+    tracing::info!(
+        "🔄 Updated L1 head #{} ({}) with state root ({})",
+        state_update.block_number,
+        state_update.block_hash,
+        state_update.global_root,
+    );
 
-        block_metrics.l1_block_number.record(state_update.block_number, &[]);
+    block_metrics.l1_block_number.record(state_update.block_number, &[]);
 
-        backend
-            .write_last_confirmed_block(state_update.block_number)
-            .context("Setting l1 last confirmed block number")?;
-        tracing::debug!("update_l1: wrote last confirmed block number");
-    }
+    backend.write_last_confirmed_block(state_update.block_number).context("Setting l1 last confirmed block number")?;
+    tracing::info!("update_l1: wrote last confirmed block number");
+    // }
 
     Ok(())
 }
